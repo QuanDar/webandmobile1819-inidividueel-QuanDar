@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .all-wrapper{
+            margin: 10% 35% 0 35%;
+        }
+        .form-wrapper{
+            margin: 0 10% 0 10%;
+        }
+        .demo-card-wide.mdl-card {
+            width: 512px;
+        }
+        .demo-card-wide > .mdl-card__title {
+            height: 50%;
+        }
+        .mdl-textfield{
+            width: 100%;
+        }
+    </style>
+
+    <div class="all-wrapper">
+        <div class="mdl-grid">
+            <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">Add a Category</h2>
+                </div>
+                <div  class="form-wrapper">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            {{ form_start(form) }}
+                            {{ form_widget(form) }}
+                        </div>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <input class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"  type="submit" />
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

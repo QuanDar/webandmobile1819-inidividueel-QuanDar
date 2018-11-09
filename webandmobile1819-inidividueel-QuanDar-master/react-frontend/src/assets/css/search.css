@@ -1,0 +1,17 @@
+.mdl-textfield__expandable-holder {
+    max-width: 100%;
+    width: 100%;
+}
+
+.mdl-textfield--expandable {
+    width: 100%;
+}
+
+.getmdl-select{
+    width: 20%;
+}
+
+.mdl-textfield--expandable {
+    width: 70%;
+    margin-right: 50px;
+}

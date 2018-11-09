@@ -1,0 +1,7 @@
+.upvote{
+    margin-right: 2%;
+}
+
+.mdl-card__title-text a:link, .mdl-card__title-text a:visited{
+    color: #333;
+}
