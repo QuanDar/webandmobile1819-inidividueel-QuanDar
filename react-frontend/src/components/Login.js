@@ -10,7 +10,6 @@ class Login extends React.Component {
         this.state = {
             username: this.props.username !== '' ? this.props.username : '',
             password: this.props.password !== '' ? this.props.password : '',
-            role: this.props.role !== '' ? this.props.role : '',
         }
     }
 
@@ -26,11 +25,11 @@ class Login extends React.Component {
         })
     };
 
-    changeRole = (event) => {
-        this.setState({
-            role: event.target.value
-        })
-    };
+  //  changeRole = (event) => {
+  //      this.setState({
+  //          role: event.target.value
+ //       })
+ //   };
 
     submitForm = () => {
         this.props.actions.loginUser(this.state.username, this.state.password, this.state.role);
@@ -58,10 +57,10 @@ class Login extends React.Component {
                                 <input className="mdl-textfield__input" value={this.state.password} onChange={this.changePassword} type="password" id="password" />
                                 <label className="mdl-textfield__label" htmlFor="password">Password</label>
                             </div>
-                            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            {/*<div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input className="mdl-textfield__input" value={this.state.role} onChange={this.changeRole} type="text" id="role" />
                                 <label className="mdl-textfield__label" htmlFor="role">role</label>
-                            </div>
+        </div>--> */}
                         </div>
                         <div className="mdl-card__actions mdl-card--border">
                             <button onClick={this.submitForm}
@@ -79,7 +78,6 @@ export default connect(store => ({
         loggedIn: store.user.loggedIn,
         username: store.user.username,
         password: store.user.password,
-        role: store.user.role
     }),
     (dispatch) => ({
         actions: bindActionCreators({...user}, dispatch)
