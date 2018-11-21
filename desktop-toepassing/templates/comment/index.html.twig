@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        .center{
+            text-align: center;
+        }
+        .one-third{
+            margin-left: 20%;
+        }
+        .no-side-touch{
+            margin: 0 20%;
+        }
+    </style>
+    <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--12-col">
+            <h1 class="center">Comment Controls</h1>
+            <h2 class="one-third">Update Comment</h2>
+            <div class="no-side-touch">
+                {% set updateCommentForm = updateCommentFormObject.createView %}
+                {{ form_start(updateCommentForm, {'action': path('updateComment'), 'method': 'POST'}) }}
+
+                {{ form_label(updateCommentForm.id, 'Id: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(updateCommentForm.id, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {{ form_label(updateCommentForm.token, 'Token: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(updateCommentForm.token, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {{ form_label(updateCommentForm.content, 'Content: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(updateCommentForm.content, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" />
+                {{ form_end(updateCommentForm) }}
+            </div>
+        </div>
+        <div class="mdl-cell mdl-cell--12-col">
+            <h2 class="one-third">Delete Comment</h2>
+            <div class="no-side-touch">
+                {% set deleteCommentForm = deleteCommentFormObject.createView %}
+                {{ form_start(deleteCommentForm, {'action': path('deleteComment'), 'method': 'POST'}) }}
+
+                {{ form_label(deleteCommentForm.id, 'Id: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(deleteCommentForm.id, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {{ form_label(deleteCommentForm.token, 'Token: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(deleteCommentForm.token, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" />
+                {{ form_end(deleteCommentForm) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

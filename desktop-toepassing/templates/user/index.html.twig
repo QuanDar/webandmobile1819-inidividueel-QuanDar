@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+{% block title %}Hello {{ controller_name }}!{% endblock %}
+
+{% block body %}
+<style>
+    .center{
+        text-align: center;
+    }
+    .one-third{
+        margin-left: 20%;
+    }
+    .no-side-touch{
+        margin: 0 20%;
+    }
+</style>
+    <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--12-col">
+            <h1 class="center">User Controls</h1>
+            <h2 class="one-third">Add User</h2>
+            <div class="no-side-touch">
+                {% set addUserForm = addUserFormObject.createView %}
+                {{ form_start(addUserForm, {'action': path('addUser'), 'method': 'POST'}) }}
+
+                {{ form_label(addUserForm.email, 'Email: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(addUserForm.email, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {{ form_label(addUserForm.username, 'username: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(addUserForm.username, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {{ form_label(addUserForm.roles, 'Role: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(addUserForm.roles, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {{ form_label(addUserForm.password, 'Password: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(addUserForm.password, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" />
+                {% else %}
+                    <h3>Je moet admin zijn om users aan te maken</h3>
+                {% endif %}
+                {{ form_end(addUserForm) }}
+            </div>
+        </div>
+        <div class="mdl-cell mdl-cell--12-col">
+            <h2 class="one-third">Update User</h2>
+            <div class="no-side-touch">
+                {% set updateUserForm = updateUserFormObject.createView %}
+                {{ form_start(updateUserForm, {'action': path('updateUser'), 'method': 'POST'}) }}
+
+                {{ form_label(updateUserForm.username, 'Username: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(updateUserForm.username, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {{ form_label(updateUserForm.roles, 'Roles: ', {'label_attr': {'class': 'foo'}}) }}
+                {{ form_widget(updateUserForm.roles, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" />
+                {% else %}
+                    <h3>Je moet admin zijn om users te updaten</h3>
+                {% endif %}
+                {{ form_end(updateUserForm) }}
+            <div>
+        </div>
+        <div class="mdl-cell mdl-cell--12-col">
+            <h2>Delete User</h2>
+
+            {% set deleteUserForm = deleteUserFormObject.createView %}
+            {{ form_start(deleteUserForm, {'action': path('deleteUser'), 'method': 'POST'}) }}
+
+            {{ form_label(deleteUserForm.username, 'Username: ', {'label_attr': {'class': 'foo'}}) }}
+            {{ form_widget(deleteUserForm.username, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" />
+            {% else %}
+                <h3>Je moet admin zijn om users te verwijderen</h3>
+            {% endif %}
+            {{ form_end(deleteUserForm) }}
+        </div>
+    </div>
+{% endblock %}

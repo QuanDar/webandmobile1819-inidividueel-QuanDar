@@ -1,0 +1,195 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ controller_name }}!{% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper {
+            margin: 1em auto;
+            max-width: 800px;
+            width: 95%;
+            font: 18px/1.5 sans-serif;
+        }
+
+        .example-wrapper code {
+            background: #F5F5F5;
+            padding: 2px 6px;
+        }
+    </style>
+
+    <div class="example-wrapper">
+        <h1>{{ controller_name }}</h1>
+        <div class="mdl-grid">
+            <div class="mdl-cell mdl-cell--12-col">
+                {% set messageForm = messageFormObject.createView %}
+                {{ form_start(messageForm, {'action': path('postMessage'), 'method': 'POST'}) }}
+
+                <div class="mdl-textfield mdl-js-textfield getmdl">
+                    {{ form_widget(messageForm.content, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+                    <label for="message_content" class="mdl-textfield__label">Voeg bericht toe</label>
+
+                </div>
+                <div class="mdl-textfield mdl-js-textfield getmdl">
+                  <select name="category" class="mdl-textfield__input">
+                      {% for c in categories %}
+                      <option value="{{ c.id }}">{{ c.name }}</option>
+                      {% endfor %}
+                  </select>
+                </div>
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" />
+                {% else %}
+                    <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" disabled />
+                    <span>Je moet ingelogd zijn om reacties te plaatsen</span>
+                {% endif %}
+                {% if app.user %}
+                    {{ form_widget(messageForm.user.id, {'value' : app.user.id}) }}
+                {% endif %}
+                {{ form_end(messageForm) }}
+            </div>
+
+
+            <div class="mdl-cell mdl-cell--12-col">
+                {% set messageSearchForm = messageSearchFormObject.createView %}
+                {{ form_start(messageSearchForm, {'action': path('getAllMessages'), 'method': 'POST'}) }}
+                <!-- Simple Select -->
+                <div class="mdl-textfield mdl-js-textfield getmdl">
+                    <!--<input type="text" value="" class="mdl-textfield__input" id="sample1" readonly>-->
+                    {{ form_widget(messageSearchForm.content, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+                    <input type="hidden" value="" name="message_search_form_name">
+                    <label for="message_search_form_name" class="mdl-textfield__label">Zoek door berichten</label>
+                </div>
+                <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" />
+                {{ form_end(messageSearchForm) }}
+            </div>
+
+            {% if messages %}
+                <ul>
+                    {% for m in messages %}
+                    <div class="">
+
+                        <div class="demo-card-wide mdl-shadow--3dp">
+                            <div class="mdl-card__title">
+                                <h3 class="mdl-card__title-text">
+                                    {% if m.user %}
+                                        {{ m.user.username|e }}
+                                    {% else %}
+                                        User not found
+                                    {% endif %}
+                                </h3>
+                            </div>
+                            <div class="mdl-card__supporting-text">
+                                {% if m.content %}
+                                    {{ m.content|e }}
+                                {% else %}
+                                    Content not found
+                                {% endif %}
+                            </div>
+                            <div>
+                                {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_POSTER') or is_granted('ROLE_MODERATOR') %}
+                                    {% set deleteMessageForm = deleteMessageFormObject.createView %}
+                                    {{ form_start(deleteMessageForm, {'action': path('deleteMessage'), 'method': 'POST'}) }}
+                                    {{ form_widget(deleteMessageForm.id, {'value' : m.id}) }}
+                                    <input type="submit" value="Verwijder bericht" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"/>
+                                    {{ form_end(deleteMessageForm) }}
+                                {% endif %}
+                            </div>
+                            <div class="center">
+                                    <span class="mdl-chip mdl-chip--contact">
+                                              {% set upVoteMessageForm = upVoteMessageFormObject.createView %}
+                                        {{ form_start(upVoteMessageForm, {'action': path('upVoteMessage'), 'method': 'POST'}) }}
+                                        {{ form_widget(upVoteMessageForm.id, {'value' : m.id}) }}
+                                        <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">{{ m.upVotes }}</span>
+                                    <input value="Up Vote" type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"/>
+                                        {{ form_end(upVoteMessageForm) }}
+                                    </span>
+                                <span class="mdl-chip mdl-chip--contact">
+                                    {% set downVoteMessageForm = downVoteMessageFormObject.createView %}
+                                    {{ form_start(downVoteMessageForm, {'action': path('downVoteMessage'), 'method': 'POST'}) }}
+                                    {{ form_widget(downVoteMessageForm.id, {'value' : m.id}) }}
+                                    <span class="mdl-chip__contact mdl-color--red mdl-color-text--white">{{ m.downVotes }}</span>
+                                    <input value="Down Vote" type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"/>
+                                    {{ form_end(downVoteMessageForm) }}
+                                    </span>
+                            </div>
+                            <div class="mdl-card__actions mdl-card--border">
+                                <div class="">
+                                    {% if m.date %}
+                                        {{ m.date|date("m/d/Y") }}
+                                    {% else %}
+                                        Date not found
+                                    {% endif %}
+                                    <br/>
+                                </div>
+                                {% if m.categories %}
+                                    <div class="mdl-card__subtitle-text">
+                                        {% for c in m.categories %}
+                                            {% if c.name %}
+                                                {{ c.name }}
+                                            {% else %}
+                                                Name not found
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <!-- Loop comments -->
+                            {% if m.comments %}
+                                {% for c in m.comments %}
+                                    <div class="mdl-list__item mdl-list__item--three-line mdl-shadow--2dp background whole">
+                                            <span class="mdl-list__item-primary-content">
+                                                {% if c.user %}
+                                                    <span class="mdl-chip__contact mdl-color--black mdl-color-text--white">
+                                                   {{ c.user.userName|slice(1, 2) }}
+                                                </span>
+                                                    <span class={"small_text"}>
+                                                    {{ c.user.userName }}
+                                                </span>
+                                                {% endif %}
+                                                <span class="small_text mdl-list__item-text-body ">
+                                                    {{ c.content }}
+                                                </span>
+                                            </span>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            <!-- Add comment -->
+
+                            {% set commentForm = commentFormObject.createView %}
+                            {{ form_start(commentForm, {'action': path('formComment'), 'method': 'POST'}) }}
+
+                            <div class="mdl-list__item mdl-list__item--three-line mdl-shadow--2dp background whole">
+                                <div class="mdl-textfield mdl-js-textfield getmdl-select">
+                                    <!--<input type="text" value="" class="mdl-textfield__input" id="sample1" readonly>-->
+                                    {{ form_widget(commentForm.content, { 'attr': {'class': 'mdl-textfield__input'} }) }}
+                                    <input type="hidden" value="" name="message_search_form_name">
+                                    <label for="comment_form_content" class="mdl-textfield__label">Voeg comment toe</label>
+                                </div>
+                                {{ form_widget(commentForm.message.id, {'value' : m.id}) }}
+                                {% if(app.user) %}
+                                    {{ form_widget(commentForm.user.id, {'value' : app.user.id}) }}
+                                {% endif %}
+
+                                {{ form_widget(commentForm.message.user.id, {'value' : m.user.id}) }}
+                                <!--<input class="mdl-textfield__input" type="text" id="sample1">-->
+                                <input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" />
+                            </div>
+                            {{ form_end(commentForm) }}
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                </ul>
+            {% else %}
+                No messages found
+            {% endif %}
+
+            <div class="navigation">
+                {{ knp_pagination_render(messages) }}
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

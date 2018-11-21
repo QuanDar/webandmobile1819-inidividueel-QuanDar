@@ -1,0 +1,23 @@
+# config/packages/easy_admin.yaml
+easy_admin:
+  entities:
+    Message:
+      class: App\Entity\Message
+      form:
+        title: 'Voeg message toe'
+        form_options: { validation_groups: ['Default'] }
+        new:
+          form_options: { validation_groups: ['Default', 'Customer'] }
+        edit:
+          title:  'Edit message'
+      label: 'Messages'
+      list:
+        title: "All messages"
+        actions:
+        - { name: 'show', icon: 'search', label: '', title: 'Search' }
+        - { name: 'edit', label: 'Edit', title: 'Edit' }
+        - { name: 'delete', label: 'Delete', title: 'Delete' }
+    Category:
+      class: App\Entity\Category
+    Comment:
+      class: App\Entity\Comment
