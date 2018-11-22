@@ -43,7 +43,6 @@ class ImageController extends FOSRestController
     }
 
     /**
-     * Retrieves an Article resource
      * @Rest\Get("/api/images")
      */
     public function getAllImages() : View
@@ -60,7 +59,6 @@ class ImageController extends FOSRestController
     }
 
     /**
-     * Retrieves an Article resource
      * @Rest\Get("/api/image/{imageId}")
      */
     public function getImageById(int $imageId) : View
@@ -77,7 +75,6 @@ class ImageController extends FOSRestController
     }
 
     /**
-     * Creates an Article resource
      * @Rest\Post("/api/image/post")
      * @param Request $request
      * @return View

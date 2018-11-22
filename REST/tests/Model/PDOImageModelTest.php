@@ -3,7 +3,7 @@
 namespace test;
 
 use App\Exception\IllegalArgumentExceptions;
-use App\Model\PDOImageModel;
+use App\Model\PDOImageModelInterface;
 use PHPUnit\Framework\TestCase;
 use App\Model\Connection;
 use Symfony\Component\Filesystem\Exception\InvalidArgumentException;
@@ -49,7 +49,7 @@ class PDOImageModelTest extends TestCase
     public function testGetById_ImagesInDatabase()
     {
         //Images ophalen uit sqlite database
-        $imagesModel = new PDOImageModel($this->connection);
+        $imagesModel = new PDOImageModelInterface($this->connection);
         $actualImage = $imagesModel->getImageById(2);
 
         $expectedImage = $this->providerImages();
@@ -63,7 +63,7 @@ class PDOImageModelTest extends TestCase
     public function testGetById_WrongImageId()
     {
         //Images ophalen uit sqlite database
-        $imagesModel = new PDOImageModel($this->connection);
+        $imagesModel = new PDOImageModelInterface($this->connection);
         $actualImage = $imagesModel->getImageById("This is totally wrong image id");
 
         $this->expectException(InvalidArgumentException::class);
@@ -71,7 +71,7 @@ class PDOImageModelTest extends TestCase
 
     public function testGetAll_ImagesInDatabase()
     {
-        $imagesModel = new PDOImageModel($this->connection);
+        $imagesModel = new PDOImageModelInterface($this->connection);
         $actualImage = $imagesModel->getAllImages();
         $expectedImage = $this->providerImages();
         $this->assertEquals('array', gettype($actualImage));
@@ -81,7 +81,7 @@ class PDOImageModelTest extends TestCase
     public function testPostImage_imageInDatabase()
     {
         //Image posten in sqlite database
-        $imagesModel = new PDOImageModel($this->connection);
+        $imagesModel = new PDOImageModelInterface($this->connection);
         $actualImage = $imagesModel->postImage(base64_decode($this->content));
 
         //Image uit de database ophalen
@@ -94,13 +94,28 @@ class PDOImageModelTest extends TestCase
         $this->assertEquals(['id' => $image['id'], 'content' => base64_encode($image['content'])], $actualImage);
     }
 
+    public function testDeleteImage_imageInDatabase()
+    {
+        //Image posten in sqlite database
+        $imagesModel = new PDOImageModelInterface($this->connection);
+        $actualImage = $imagesModel->deleteImageById(2);
+
+        //Image uit de database ophalen
+        $statement = $this->connection->getPDO()->prepare("DELETE FROM images WHERE id = 2");
+        $statement->execute();
+        $image = $statement->rowCount() == 0;
+
+        $this->assertEquals('boolean', gettype($actualImage));
+        $this->assertEquals($image, $actualImage);
+    }
+
     /**
      * @expectedException App\Exception\IllegalArgumentExceptions
      */
     public function testPostImage_contentIsNull_Image()
     {
         //Image posten in sqlite database
-        $imagesModel = new PDOImageModel($this->connection);
+        $imagesModel = new PDOImageModelInterface($this->connection);
         $actualImage = $imagesModel->postImage("");
 
         $this->expectException(IllegalArgumentExceptions::class);
@@ -112,8 +127,32 @@ class PDOImageModelTest extends TestCase
     public function testPostImage_emptyContentString_Image()
     {
         //Image posten in sqlite database
-        $imagesModel = new PDOImageModel($this->connection);
+        $imagesModel = new PDOImageModelInterface($this->connection);
         $actualImage = $imagesModel->postImage(null);
+
+        $this->expectException(IllegalArgumentExceptions::class);
+    }
+
+    /**
+     * @expectedException App\Exception\IllegalArgumentExceptions
+     */
+    public function testDeleteImage_IdIsNotNumeric_IdIsNull_Image()
+    {
+        //Image posten in sqlite database
+        $imagesModel = new PDOImageModelInterface($this->connection);
+        $actualImage = $imagesModel->deleteImageById(null);
+
+        $this->expectException(IllegalArgumentExceptions::class);
+    }
+
+    /**
+     * @expectedException App\Exception\IllegalArgumentExceptions
+     */
+    public function testDeleteImage_IdIsNotNumeric_IdIsString_Image()
+    {
+        //Image posten in sqlite database
+        $imagesModel = new PDOImageModelInterface($this->connection);
+        $actualImage = $imagesModel->deleteImageById("no integer");
 
         $this->expectException(IllegalArgumentExceptions::class);
     }

@@ -67,6 +67,24 @@ class MessageControllerTest extends WebTestCase
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
     }
 
+    public function testDeleteMessage_AdminPage()
+    {
+        $client = static::createClient();
+
+        $client->request('DELETE', '/admin/message/delete');
+
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+    }
+
+    public function testPostMessage_AdminPage()
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/admin/message');
+
+        $this->assertEquals(201, $client->getResponse()->getStatusCode());
+    }
+
     public function noRouteFound()
     {
         $client = static::createClient();

@@ -25,12 +25,6 @@ class Login extends React.Component {
         })
     };
 
-  //  changeRole = (event) => {
-  //      this.setState({
-  //          role: event.target.value
- //       })
- //   };
-
     submitForm = () => {
         this.props.actions.loginUser(this.state.username, this.state.password, this.state.role);
     };

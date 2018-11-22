@@ -1,0 +1,4 @@
+phpunit --coverage-text
+
+// kijk of xdebug geinstalleerd is:
+php -m -c

@@ -6,9 +6,9 @@ const initialState = {
     password: '',
     role: '',
     users: [
-        {username: 'root', password: 'root', role: 'ROLE_ADMIN'},
-        {username: 'megaroot', password: 'root', role: 'ROLE_ADMIN'},
-        {username: 'roy', password: 'pxl', role: 'ROLE_USER'},
+        {username: 'root', password: 'root', role: ''},
+        {username: 'megaroot', password: 'root', role: ''},
+        {username: 'roy', password: 'pxl', role: ''},
     ]
 };
 
